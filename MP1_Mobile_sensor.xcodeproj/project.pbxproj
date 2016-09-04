@@ -15,6 +15,7 @@
 		161F60281D7B696700C52309 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 161F60261D7B696700C52309 /* LaunchScreen.storyboard */; };
 		161F60331D7B696700C52309 /* MP1_Mobile_sensorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 161F60321D7B696700C52309 /* MP1_Mobile_sensorTests.m */; };
 		161F603E1D7B696700C52309 /* MP1_Mobile_sensorUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 161F603D1D7B696700C52309 /* MP1_Mobile_sensorUITests.m */; };
+		161F60501D7CC88E00C52309 /* CHCSVParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 161F604F1D7CC88E00C52309 /* CHCSVParser.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,8 @@
 		161F60391D7B696700C52309 /* MP1_Mobile_sensorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MP1_Mobile_sensorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		161F603D1D7B696700C52309 /* MP1_Mobile_sensorUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MP1_Mobile_sensorUITests.m; sourceTree = "<group>"; };
 		161F603F1D7B696700C52309 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		161F604E1D7CC88E00C52309 /* CHCSVParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHCSVParser.h; sourceTree = "<group>"; };
+		161F604F1D7CC88E00C52309 /* CHCSVParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CHCSVParser.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +104,8 @@
 		161F60171D7B696700C52309 /* MP1_Mobile_sensor */ = {
 			isa = PBXGroup;
 			children = (
+				161F604E1D7CC88E00C52309 /* CHCSVParser.h */,
+				161F604F1D7CC88E00C52309 /* CHCSVParser.m */,
 				161F601B1D7B696700C52309 /* AppDelegate.h */,
 				161F601C1D7B696700C52309 /* AppDelegate.m */,
 				161F601E1D7B696700C52309 /* ViewController.h */,
@@ -271,6 +276,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				161F60501D7CC88E00C52309 /* CHCSVParser.m in Sources */,
 				161F60201D7B696700C52309 /* ViewController.m in Sources */,
 				161F601D1D7B696700C52309 /* AppDelegate.m in Sources */,
 				161F601A1D7B696700C52309 /* main.m in Sources */,

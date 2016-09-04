@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreMotion/CoreMotion.h>
+#import "CHCSVParser.h"
 
 @interface ViewController : UIViewController
 
@@ -28,9 +29,16 @@
 
 @property CMMotionManager * motionManager;
 
+@property NSMutableArray * collectAcc;
+@property NSMutableArray * collectGyro;
+@property NSMutableArray * collectMag;
+
+@property NSString *tempFilePath;
+
 @property BOOL flag;
 
 - (IBAction)switcher:(id)sender;
+- (IBAction)sendMail:(id)sender;
 
 @end
 

@@ -17,7 +17,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    // init the dictionaries
+    self.collectAcc = [[NSMutableArray alloc] init];
+    self.collectGyro = [[NSMutableArray alloc] init];
+    self.collectMag = [[NSMutableArray alloc] init];
+    
+    // init the motion manager
     self.motionManager = [[CMMotionManager alloc] init];
+    
+    
     self.acc_x.text = @"0";
     self.acc_y.text = @"0";
     self.acc_z.text = @"0";
@@ -33,10 +41,18 @@
     self.motionManager.accelerometerUpdateInterval = 0.1;
     self.motionManager.gyroUpdateInterval = 0.1;
     self.motionManager.magnetometerUpdateInterval = 0.1;
-
     
+    // set the time to the correct format
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
+    [dateFormatter setDateFormat:@"dd-MM-yy_HH-mm-ss"];
+    [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
+    self.timestamp.text = [dateFormatter stringFromDate:[NSDate date]];
+
+    // init with flag as false
     self.flag = false;
     
+    // init the temp file of csv
+    self.tempFilePath = [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.csv", self.timestamp.text]];
     
 }
 
@@ -90,11 +106,20 @@
 
 }
 
+- (IBAction)sendMail:(id)sender {
+}
+
 -(void)outputAccelertionData:(CMAcceleration)acceleration
 {
     self.acc_x.text = [NSString stringWithFormat:@"%f", acceleration.x];
     self.acc_y.text = [NSString stringWithFormat:@"%f", acceleration.y];
     self.acc_z.text = [NSString stringWithFormat:@"%f", acceleration.z];
+    
+    // set the time to the correct format
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
+    [dateFormatter setDateFormat:@"dd-MM-yy_HH-mm-ss"];
+    [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
+    self.timestamp.text = [dateFormatter stringFromDate:[NSDate date]];
 }
 
 -(void)outputGyroData:(CMRotationRate)rotationRate
@@ -103,6 +128,12 @@
     self.gyro_y.text = [NSString stringWithFormat:@"%f", rotationRate.y];
     self.gyro_z.text = [NSString stringWithFormat:@"%f", rotationRate.z];
     
+    // set the time to the correct format
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
+    [dateFormatter setDateFormat:@"dd-MM-yy_HH-mm-ss"];
+    [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
+    self.timestamp.text = [dateFormatter stringFromDate:[NSDate date]];
+    
 }
 
 -(void)outputMagData:(CMMagneticField) magneticField{
@@ -110,6 +141,11 @@
     self.mag_y.text = [NSString stringWithFormat:@"%f", magneticField.y];
     self.mag_z.text = [NSString stringWithFormat:@"%f", magneticField.z];
     
+    // set the time to the correct format
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
+    [dateFormatter setDateFormat:@"dd-MM-yy_HH-mm-ss"];
+    [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
+    self.timestamp.text = [dateFormatter stringFromDate:[NSDate date]];
 }
 
 @end
