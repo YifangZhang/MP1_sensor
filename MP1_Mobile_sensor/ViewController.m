@@ -41,9 +41,9 @@
     
     // Do any additional setup after loading the view, typically from a nib.
     
-    self.motionManager.accelerometerUpdateInterval = 0.01;
-    self.motionManager.gyroUpdateInterval = 0.01;
-    self.motionManager.magnetometerUpdateInterval = 0.01;
+    self.motionManager.accelerometerUpdateInterval = 0.1;
+    self.motionManager.gyroUpdateInterval = 0.1;
+    self.motionManager.magnetometerUpdateInterval = 0.1;
     
     // set the time to the correct format
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
