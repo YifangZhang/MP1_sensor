@@ -8,9 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreMotion/CoreMotion.h>
-#import "CHCSVParser.h"
+#import <MessageUI/MessageUI.h>
+#import <MessageUI/MFMailComposeViewController.h>
 
-@interface ViewController : UIViewController
+
+
+@interface ViewController : UIViewController <MFMailComposeViewControllerDelegate>
 
 @property (strong, nonatomic) IBOutlet UILabel *acc_x;
 @property (strong, nonatomic) IBOutlet UILabel *acc_y;
@@ -39,6 +42,8 @@
 
 - (IBAction)switcher:(id)sender;
 - (IBAction)sendMail:(id)sender;
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error;
+
 
 @end
 

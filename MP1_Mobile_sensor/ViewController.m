@@ -8,7 +8,7 @@
 
 #import "ViewController.h"
 
-@interface ViewController ()
+@interface ViewController () <MFMailComposeViewControllerDelegate>
 
 @end
 
@@ -19,8 +19,11 @@
     
     // init the dictionaries
     self.collectAcc = [[NSMutableArray alloc] init];
+    [self.collectAcc addObject:@[@"timestamp", @"Acc_x", @"Acc_y", @"Acc_z"]];
     self.collectGyro = [[NSMutableArray alloc] init];
+    [self.collectGyro addObject:@[@"timestamp", @"Gyro_x", @"Gyro_y", @"Gyro_z"]];
     self.collectMag = [[NSMutableArray alloc] init];
+    [self.collectMag addObject:@[@"timestamp", @"Mag_x", @"Mag_y", @"Mag_z"]];
     
     // init the motion manager
     self.motionManager = [[CMMotionManager alloc] init];
@@ -44,7 +47,7 @@
     
     // set the time to the correct format
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
-    [dateFormatter setDateFormat:@"dd-MM-yy_HH-mm-ss"];
+    [dateFormatter setDateFormat:@"dd-MM-yy_HH-mm-ss.SSS"];
     [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
     self.timestamp.text = [dateFormatter stringFromDate:[NSDate date]];
 
@@ -53,6 +56,7 @@
     
     // init the temp file of csv
     self.tempFilePath = [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.csv", self.timestamp.text]];
+    NSLog(self.tempFilePath);
     
 }
 
@@ -102,12 +106,38 @@
         [self.motionManager stopGyroUpdates];
         [self.motionManager stopMagnetometerUpdates];
         self.flag = false;
+        NSLog(@"%lu", (unsigned long)[self.collectAcc count]);
     }
 
 }
 
 - (IBAction)sendMail:(id)sender {
+    
+    NSString * writeString = @"";
+    for (NSString * acc in self.collectAcc) {
+        writeString = [NSString stringWithFormat:@"%@%@", writeString, acc];
+    }
+    for (NSString * gyro in self.collectGyro) {
+        writeString = [NSString stringWithFormat:@"%@%@", writeString, gyro];
+    }
+    for (NSString * mag in self.collectMag) {
+        writeString = [NSString stringWithFormat:@"%@%@", writeString, mag];
+    }
+    NSData* writeData = [writeString dataUsingEncoding:NSUTF8StringEncoding];
+    
+    MFMailComposeViewController *mailer = [[MFMailComposeViewController alloc] init];
+    mailer.mailComposeDelegate = self;
+    
+    [mailer setMessageBody:@"Here is some main text in the email!" isHTML:NO];
+    [mailer setToRecipients:@[@"yifangzhang2009@gmail.com", @"aaronmann613348@gmail.com"]];
+    [mailer setSubject:@"CSV File"];
+    [mailer addAttachmentData:writeData
+                     mimeType:@"text/csv"
+                     fileName:@"FileName.csv"];
+    [self presentViewController:mailer animated:YES completion:nil];
+    
 }
+
 
 -(void)outputAccelertionData:(CMAcceleration)acceleration
 {
@@ -117,9 +147,10 @@
     
     // set the time to the correct format
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
-    [dateFormatter setDateFormat:@"dd-MM-yy_HH-mm-ss"];
+    [dateFormatter setDateFormat:@"dd-MM-yy_HH-mm-ss.SSS"];
     [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
     self.timestamp.text = [dateFormatter stringFromDate:[NSDate date]];
+    [self.collectAcc addObject:[NSString stringWithFormat:@"%@,%@,%@,%@\n", self.timestamp.text, self.acc_x.text, self.acc_y.text, self.acc_z.text]];
 }
 
 -(void)outputGyroData:(CMRotationRate)rotationRate
@@ -130,10 +161,10 @@
     
     // set the time to the correct format
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
-    [dateFormatter setDateFormat:@"dd-MM-yy_HH-mm-ss"];
+    [dateFormatter setDateFormat:@"dd-MM-yy_HH-mm-ss.SSS"];
     [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
     self.timestamp.text = [dateFormatter stringFromDate:[NSDate date]];
-    
+    [self.collectGyro addObject:[NSString stringWithFormat:@"%@,%@,%@,%@\n", self.timestamp.text, self.gyro_x.text, self.gyro_y.text, self.gyro_z.text]];
 }
 
 -(void)outputMagData:(CMMagneticField) magneticField{
@@ -143,9 +174,34 @@
     
     // set the time to the correct format
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
-    [dateFormatter setDateFormat:@"dd-MM-yy_HH-mm-ss"];
+    [dateFormatter setDateFormat:@"dd-MM-yy_HH-mm-ss.SSS"];
     [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
     self.timestamp.text = [dateFormatter stringFromDate:[NSDate date]];
+    [self.collectMag addObject:[NSString stringWithFormat:@"%@,%@,%@,%@\n", self.timestamp.text, self.mag_x.text, self.mag_y.text, self.mag_z.text]];
+}
+
+
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error
+{
+    switch (result) {
+        case MFMailComposeResultSent:
+            NSLog(@"You sent the email.");
+            break;
+        case MFMailComposeResultSaved:
+            NSLog(@"You saved a draft of this email");
+            break;
+        case MFMailComposeResultCancelled:
+            NSLog(@"You cancelled sending this email.");
+            break;
+        case MFMailComposeResultFailed:
+            NSLog(@"Mail failed:  An error occurred when trying to compose this email");
+            break;
+        default:
+            NSLog(@"An error occurred when trying to compose this email");
+            break;
+    }
+    
+    [self dismissViewControllerAnimated:YES completion:NULL];
 }
 
 @end
