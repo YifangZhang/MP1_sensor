@@ -19,11 +19,11 @@
     
     // init the dictionaries
     self.collectAcc = [[NSMutableArray alloc] init];
-    [self.collectAcc addObject:@[@"timestamp", @"Acc_x", @"Acc_y", @"Acc_z"]];
+    [self.collectAcc addObject:@"timestamp,Acc_x,Acc_y,Acc_z\n"];
     self.collectGyro = [[NSMutableArray alloc] init];
-    [self.collectGyro addObject:@[@"timestamp", @"Gyro_x", @"Gyro_y", @"Gyro_z"]];
+    [self.collectGyro addObject:@"timestamp,Gyro_x,Gyro_y,Gyro_z\n"];
     self.collectMag = [[NSMutableArray alloc] init];
-    [self.collectMag addObject:@[@"timestamp", @"Mag_x", @"Mag_y", @"Mag_z"]];
+    [self.collectMag addObject:@"timestamp,Mag_x,Mag_y,Mag_z\n"];
     
     // init the motion manager
     self.motionManager = [[CMMotionManager alloc] init];
@@ -41,9 +41,9 @@
     
     // Do any additional setup after loading the view, typically from a nib.
     
-    self.motionManager.accelerometerUpdateInterval = 0.1;
-    self.motionManager.gyroUpdateInterval = 0.1;
-    self.motionManager.magnetometerUpdateInterval = 0.1;
+    self.motionManager.accelerometerUpdateInterval = 0.01;
+    self.motionManager.gyroUpdateInterval = 0.01;
+    self.motionManager.magnetometerUpdateInterval = 0.01;
     
     // set the time to the correct format
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
@@ -112,29 +112,40 @@
 }
 
 - (IBAction)sendMail:(id)sender {
+    if ([MFMailComposeViewController canSendMail]) {
+        // device is configured to send mail
     
-    NSString * writeString = @"";
-    for (NSString * acc in self.collectAcc) {
-        writeString = [NSString stringWithFormat:@"%@%@", writeString, acc];
+        NSString * writeString = @"";
+        for (NSString * acc in self.collectAcc) {
+            writeString = [NSString stringWithFormat:@"%@%@", writeString, acc];
+        }
+        for (NSString * gyro in self.collectGyro) {
+            writeString = [NSString stringWithFormat:@"%@%@", writeString, gyro];
+        }
+        for (NSString * mag in self.collectMag) {
+            writeString = [NSString stringWithFormat:@"%@%@", writeString, mag];
+        }
+        NSData* writeData = [writeString dataUsingEncoding:NSUTF8StringEncoding];
+        
+        MFMailComposeViewController *mailer = [[MFMailComposeViewController alloc] init];
+        mailer.mailComposeDelegate = self;
+        
+        [mailer setMessageBody:@"Here is some main text in the email!" isHTML:NO];
+        [mailer setToRecipients:@[@"yifangzhang2009@gmail.com", @"aaronmann613348@gmail.com"]];
+        [mailer setSubject:@"CSV File"];
+        [mailer addAttachmentData:writeData
+                         mimeType:@"text/csv"
+                         fileName:@"FileName.csv"];
+        [self presentViewController:mailer animated:YES completion:nil];
     }
-    for (NSString * gyro in self.collectGyro) {
-        writeString = [NSString stringWithFormat:@"%@%@", writeString, gyro];
+    else{
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"The Mail is not Avaliable"
+                                                        message:@"You need open up the Mail app and set up account in order to use the mail sending functionality."
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
     }
-    for (NSString * mag in self.collectMag) {
-        writeString = [NSString stringWithFormat:@"%@%@", writeString, mag];
-    }
-    NSData* writeData = [writeString dataUsingEncoding:NSUTF8StringEncoding];
-    
-    MFMailComposeViewController *mailer = [[MFMailComposeViewController alloc] init];
-    mailer.mailComposeDelegate = self;
-    
-    [mailer setMessageBody:@"Here is some main text in the email!" isHTML:NO];
-    [mailer setToRecipients:@[@"yifangzhang2009@gmail.com", @"aaronmann613348@gmail.com"]];
-    [mailer setSubject:@"CSV File"];
-    [mailer addAttachmentData:writeData
-                     mimeType:@"text/csv"
-                     fileName:@"FileName.csv"];
-    [self presentViewController:mailer animated:YES completion:nil];
     
 }
 
